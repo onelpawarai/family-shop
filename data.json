@@ -3,12 +3,8 @@
   "shopTagline": "আপনার পরিবারের অনলাইন দোকান",
   "shopDescription": "স্মার্টওয়াচ, চশমা, শাড়ি, শার্ট, প্যান্ট, ঘড়ি এবং আরও অনেক কিছু — সবার জন্য সেরা প্রোডাক্ট, সেরা দামে।",
   "heroTitle": "আপনার পরিবারের\nসেরা অনলাইন দোকান",
-<<<<<<< HEAD
   "heroBadge": "নতুন কালেকশন ২০২৬",
   "heroDescription": "স্মার্টওয়াচ, চশমা, শাড়ি, শার্ট, প্যান্ট, ঘড়ি এবং আরও অনেক কিছু — সবার জন্য সেরা প্রোডাক্ট, সেরা দামে।",
-=======
-  "heroBadge": "নতুন কালেকশন ২০২৭",
->>>>>>> 61fbb1a1027bd1756a996e45f56372a3ddacc2d0
   "contactPhone": "+880 1XXX-XXXXXX",
   "contactEmail": "info@familyshop.com",
   "contactAddress": "ঢাকা, বাংলাদেশ",
@@ -17,26 +13,11 @@
   "freeDeliveryMin": 1000,
   "footerText": "আপনার পরিবারের অনলাইন দোকান। সেরা প্রোডাক্ট, সেরা দামে।",
   "navLinks": [
-    {
-      "label": "হোম",
-      "href": "#home"
-    },
-    {
-      "label": "প্রোডাক্ট",
-      "href": "#products"
-    },
-    {
-      "label": "ক্যাটাগরি",
-      "href": "#categories"
-    },
-    {
-      "label": "আমাদের সম্পর্কে",
-      "href": "#about"
-    },
-    {
-      "label": "যোগাযোগ",
-      "href": "#contact"
-    }
+    { "label": "হোম", "href": "#home" },
+    { "label": "প্রোডাক্ট", "href": "#products" },
+    { "label": "ক্যাটাগরি", "href": "#categories" },
+    { "label": "আমাদের সম্পর্কে", "href": "#about" },
+    { "label": "যোগাযোগ", "href": "#contact" }
   ],
   "buttons": {
     "heroPrimary": "এখনই কিনুন",
@@ -52,26 +33,10 @@
     "accent": "#10B981"
   },
   "categories": [
-    {
-      "id": "watch",
-      "name": "ঘড়ি",
-      "count": "১২ টি প্রোডাক্ট"
-    },
-    {
-      "id": "smartwatch",
-      "name": "স্মার্টওয়াচ",
-      "count": "৮ টি প্রোডাক্ট"
-    },
-    {
-      "id": "eyewear",
-      "name": "চশমা",
-      "count": "১৫ টি প্রোডাক্ট"
-    },
-    {
-      "id": "clothing",
-      "name": "পোশাক",
-      "count": "২৫ টি প্রোডাক্ট"
-    }
+    { "id": "watch", "name": "ঘড়ি", "count": "১২ টি প্রোডাক্ট" },
+    { "id": "smartwatch", "name": "স্মার্টওয়াচ", "count": "৮ টি প্রোডাক্ট" },
+    { "id": "eyewear", "name": "চশমা", "count": "১৫ টি প্রোডাক্ট" },
+    { "id": "clothing", "name": "পোশাক", "count": "২৫ টি প্রোডাক্ট" }
   ],
   "products": [
     {
@@ -146,7 +111,5 @@
       "reviews": 312,
       "description": "প্রিমিয়াম লাক্সারি ঘড়ি — সুইস মুভমেন্ট।"
     }
-  ],
-  "_sha": "1c6165d0c0b4463badb1198335413766848e644f",
-  "heroDescription": ""
+  ]
 }
