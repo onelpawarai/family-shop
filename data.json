@@ -1,0 +1,114 @@
+{
+  "shopName": "Family Shop",
+  "shopTagline": "আপনার পরিবারের অনলাইন দোকান",
+  "shopDescription": "স্মার্টওয়াচ, চশমা, শাড়ি, শার্ট, প্যান্ট, ঘড়ি এবং আরও অনেক কিছু — সবার জন্য সেরা প্রোডাক্ট, সেরা দামে।",
+  "heroTitle": "আপনার পরিবারের\nসেরা অনলাইন দোকান",
+  "heroBadge": "নতুন কালেকশন ২০২৬",
+  "contactPhone": "+880 1XXX-XXXXXX",
+  "contactEmail": "info@familyshop.com",
+  "contactAddress": "ঢাকা, বাংলাদেশ",
+  "facebook": "",
+  "instagram": "",
+  "freeDeliveryMin": 1000,
+  "footerText": "আপনার পরিবারের অনলাইন দোকান। সেরা প্রোডাক্ট, সেরা দামে।",
+  "navLinks": [
+    { "label": "হোম", "href": "#home" },
+    { "label": "প্রোডাক্ট", "href": "#products" },
+    { "label": "ক্যাটাগরি", "href": "#categories" },
+    { "label": "আমাদের সম্পর্কে", "href": "#about" },
+    { "label": "যোগাযোগ", "href": "#contact" }
+  ],
+  "buttons": {
+    "heroPrimary": "এখনই কিনুন",
+    "heroSecondary": "ক্যাটাগরি দেখুন",
+    "newsletter": "সাবস্ক্রাইব",
+    "newsletterPlaceholder": "আপনার ইমেইল দিন...",
+    "checkout": "চেকআউট"
+  },
+  "colors": {
+    "primary": "#F97316",
+    "primaryDark": "#EA580C",
+    "dark": "#0F0F0F",
+    "accent": "#10B981"
+  },
+  "categories": [
+    { "id": "watch", "name": "ঘড়ি", "count": "১২ টি প্রোডাক্ট" },
+    { "id": "smartwatch", "name": "স্মার্টওয়াচ", "count": "৮ টি প্রোডাক্ট" },
+    { "id": "eyewear", "name": "চশমা", "count": "১৫ টি প্রোডাক্ট" },
+    { "id": "clothing", "name": "পোশাক", "count": "২৫ টি প্রোডাক্ট" }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "স্মার্টওয়াচ প্রো",
+      "category": "smartwatch",
+      "price": 2499,
+      "oldPrice": 3999,
+      "image": "images/smartwatch.jpg",
+      "badge": "sale",
+      "rating": 4.8,
+      "reviews": 124,
+      "description": "অ্যাডভান্সড স্মার্টওয়াচ — হার্ট রেট মনিটর, GPS, ওয়াটারপ্রুফ।"
+    },
+    {
+      "id": 2,
+      "name": "প্রিমিয়াম সানগ্লাস",
+      "category": "eyewear",
+      "price": 1299,
+      "oldPrice": 1999,
+      "image": "images/sunglasses.jpg",
+      "badge": "new",
+      "rating": 4.6,
+      "reviews": 89,
+      "description": "UV400 প্রোটেকশন সহ প্রিমিয়াম সানগ্লাস।"
+    },
+    {
+      "id": 3,
+      "name": "ক্লাসিক শাড়ি",
+      "category": "clothing",
+      "price": 1899,
+      "oldPrice": 2899,
+      "image": "images/saree.jpg",
+      "badge": "sale",
+      "rating": 4.9,
+      "reviews": 201,
+      "description": "হাতে বোনা ক্লাসিক শাড়ি — প্রিমিয়াম কাপড়।"
+    },
+    {
+      "id": 4,
+      "name": "ক্যাজুয়াল শার্ট",
+      "category": "clothing",
+      "price": 799,
+      "oldPrice": 1299,
+      "image": "images/shirt.jpg",
+      "badge": "new",
+      "rating": 4.5,
+      "reviews": 67,
+      "description": "কমফোর্টেবল ক্যাজুয়াল শার্ট — ১০০% কটন।"
+    },
+    {
+      "id": 5,
+      "name": "ফ্যাশন প্যান্ট",
+      "category": "clothing",
+      "price": 999,
+      "oldPrice": 1499,
+      "image": "images/pants.jpg",
+      "badge": "",
+      "rating": 4.7,
+      "reviews": 156,
+      "description": "ট্রেন্ডি ফ্যাশন প্যান্ট — দৈনিক ব্যবহারের জন্য আদর্শ।"
+    },
+    {
+      "id": 6,
+      "name": "লাক্সারি ঘড়ি",
+      "category": "watch",
+      "price": 3499,
+      "oldPrice": 5999,
+      "image": "images/watch.jpg",
+      "badge": "sale",
+      "rating": 4.9,
+      "reviews": 312,
+      "description": "প্রিমিয়াম লাক্সারি ঘড়ি — সুইস মুভমেন্ট।"
+    }
+  ]
+}

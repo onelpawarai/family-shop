@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Family Shop — অ্যাডমিন প্যানেল</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--o:#F97316;--od:#EA580C;--ol:#FFF7ED;--dk:#0F0F0F;--d2:#1A1A1A;--g2:#666;--g3:#999;--g5:#e5e5e5;--w:#fff;--grn:#10B981;--red:#EF4444;--blu:#3B82F6;--r:12px}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter','Noto Sans Bengali',sans-serif;background:#F5F5F5;color:var(--dk);line-height:1.6;min-height:100vh;padding-bottom:80px}
+    .topbar{position:sticky;top:0;z-index:100;background:var(--w);border-bottom:1px solid var(--g5);padding:14px 16px;display:flex;align-items:center;gap:12px}
+    .topbar-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--o),#EA580C);display:grid;place-items:center;color:var(--w);font-weight:800;font-size:16px}
+    .topbar h1{font-size:16px;font-weight:700;flex:1}
+    .topbar-badge{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;background:var(--grn);color:var(--w)}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px}
+    .stat-card{background:var(--w);border-radius:var(--r);padding:14px;text-align:center;border:1px solid var(--g5)}
+    .stat-card .num{font-size:22px;font-weight:800;color:var(--dk)}
+    .stat-card .label{font-size:11px;color:var(--g3);margin-top:2px}
+    .section{padding:0 16px;margin-bottom:20px}
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .section-title{font-size:16px;font-weight:700}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:all 0.2s}
+    .btn-primary{background:var(--o);color:var(--w)}
+    .btn-primary:active{background:var(--od);transform:scale(0.97)}
+    .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+    .btn-outline{background:var(--w);color:var(--dk);border:1px solid var(--g5)}
+    .btn-danger{background:var(--red);color:var(--w)}
+    .btn-success{background:var(--grn);color:var(--w)}
+    .btn:disabled{opacity:0.5;cursor:not-allowed}
+    .product-list{display:flex;flex-direction:column;gap:10px}
+    .product-item{display:flex;align-items:center;gap:12px;background:var(--w);border-radius:var(--r);padding:12px;border:1px solid var(--g5)}
+    .product-item img{width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0}
+    .product-item-info{flex:1;min-width:0}
+    .product-item-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .product-item-price{font-size:13px;color:var(--o);font-weight:700}
+    .product-item-cat{font-size:11px;color:var(--g3)}
+    .product-item-actions{display:flex;gap:6px;flex-shrink:0}
+    .icon-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--g5);background:var(--w);display:grid;place-items:center;cursor:pointer;transition:all 0.15s}
+    .icon-btn:active{transform:scale(0.9)}
+    .icon-btn.edit{color:var(--blu)}
+    .icon-btn.delete{color:var(--red)}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:12px;font-weight:600;color:var(--g2);margin-bottom:6px}
+    .form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--g5);background:var(--w);font-size:14px;font-family:inherit;color:var(--dk);outline:none;transition:border-color 0.15s;-webkit-appearance:none}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--o)}
+    .form-textarea{resize:vertical;min-height:80px}
+    .image-upload{width:100%;height:140px;border:2px dashed var(--g5);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all 0.2s;background:var(--w)}
+    .image-upload:active{border-color:var(--o);background:var(--ol)}
+    .image-upload svg{color:var(--g3)}
+    .image-upload span{font-size:12px;color:var(--g3)}
+    .image-upload input{display:none}
+    .image-upload img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;display:none;align-items:flex-end;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--w);border-radius:20px 20px 0 0;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:20px 16px 24px;animation:slideUp 0.3s ease}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--g5)}
+    .modal-header h2{font-size:17px;font-weight:700}
+    .modal-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--g5);display:grid;place-items:center;cursor:pointer}
+    .settings-card{background:var(--w);border-radius:var(--r);padding:16px;border:1px solid var(--g5)}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--w);border-top:1px solid var(--g5);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;font-size:10px;font-weight:600;color:var(--g3);cursor:pointer;transition:color 0.15s;border:none;background:none;font-family:inherit}
+    .nav-item.active{color:var(--o)}
+    .nav-item svg{width:22px;height:22px}
+    .page{display:none}.page.active{display:block}
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--dk);color:var(--w);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:2000;animation:fadeIn 0.2s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+    .empty-state{text-align:center;padding:40px 20px;color:var(--g3)}
+    .empty-state p{font-size:14px}
+    .login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0F0F0F,#1A1A1A);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+    .login-box{background:var(--w);border-radius:20px;padding:32px 24px;width:100%;max-width:360px;text-align:center}
+    .login-box h2{font-size:20px;font-weight:800;margin-bottom:4px}
+    .login-box p{font-size:13px;color:var(--g3);margin-bottom:24px}
+    .login-logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,var(--o),#EA580C);display:grid;place-items:center;margin:0 auto 16px;color:var(--w);font-size:28px;font-weight:800}
+    .login-error{background:#FEE2E2;color:#DC2626;font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;display:none}
+    .tab-group{display:flex;gap:4px;margin-bottom:16px;background:var(--g5);border-radius:10px;padding:3px}
+    .tab-btn{flex:1;padding:8px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:var(--g2);transition:all 0.2s}
+    .tab-btn.active{background:var(--w);color:var(--dk);box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+    .color-input{width:40px;height:40px;border:2px solid var(--g5);border-radius:10px;cursor:pointer;padding:0}
+    .color-row{display:flex;align-items:center;gap:10px}
+    .color-row .form-input{flex:1}
+    .settings-tab{display:none}.settings-tab.active{display:block}
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ LOGIN ═══════════════ -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="login-logo">F</div>
+      <h2>Family Shop</h2>
+      <p>অ্যাডমিন প্যানেলে প্রবেশ করুন</p>
+      <div class="login-error" id="loginError">ভুল পাসওয়ার্ড!</div>
+      <div class="form-group">
+        <input class="form-input" id="loginPass" type="password" placeholder="পাসওয়ার্ড লিখুন..." style="text-align:center;font-size:16px" />
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        লগইন
+      </button>
+      <p style="margin-top:16px;font-size:11px;color:var(--g3)">ডিফল্ট পাসওয়ার্ড: <strong>family123</strong></p>
+      <div id="tokenSection" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--g5)">
+        <p style="font-size:11px;color:var(--g3);margin-bottom:8px">GitHub টোকেন (একবারই দিতে হবে):</p>
+        <input class="form-input" id="githubTokenInput" type="password" placeholder="ghp_xxxxxxxxxxxx" style="font-size:12px;text-align:center" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MAIN APP ═══════════════ -->
+  <div id="mainApp" style="display:none">
+    <div class="topbar">
+      <div class="topbar-logo">F</div>
+      <h1 id="topbarTitle">Family Shop</h1>
+      <span class="topbar-badge" id="syncBadge">লোড</span>
+    </div>
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page active" id="pageDashboard">
+      <div class="stats-row">
+        <div class="stat-card"><div class="num" id="statProducts">0</div><div class="label">প্রোডাক্ট</div></div>
+        <div class="stat-card"><div class="num" id="statCategories">0</div><div class="label">ক্যাটাগরি</div></div>
+        <div class="stat-card"><div class="num" id="statOrders">0</div><div class="label">অর্ডার</div></div>
+      </div>
+      <div class="section">
+        <div class="section-header"><span class="section-title">জনপ্রিয় প্রোডাক্ট</span></div>
+        <div class="product-list" id="dashProducts"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PRODUCTS ═══ -->
+    <div class="page" id="pageProducts">
+      <div class="section" style="padding-top:16px">
+        <div class="section-header">
+          <span class="section-title">প্রোডাক্ট ম্যানেজমেন্ট</span>
+          <button class="btn btn-sm btn-primary" onclick="openAddProduct()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            নতুন যোগ
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap" id="filterBar"></div>
+        <div class="product-list" id="productList"></div>
+      </div>
+    </div>
+
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="page" id="pageSettings">
+      <div class="section" style="padding-top:16px">
+        <div class="tab-group">
+          <button class="tab-btn active" onclick="showSettingsTab('shop',this)">দোকান</button>
+          <button class="tab-btn" onclick="showSettingsTab('hero',this)">হিরো</button>
+          <button class="tab-btn" onclick="showSettingsTab('buttons',this)">বাটন</button>
+          <button class="tab-btn" onclick="showSettingsTab('colors',this)">রঙ</button>
+          <button class="tab-btn" onclick="showSettingsTab('data',this)">ডাটা</button>
+        </div>
+
+        <div class="settings-tab active" id="tabShop">
+          <div class="settings-card">
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">দোকানের তথ্য</h3>
+            <div class="form-group"><label class="form-label">দোকানের নাম</label><input class="form-input" id="sShopName" /></div>
+            <div class="form-group"><label class="form-label">ট্যাগলাইন</label><input class="form-input" id="sTagline" /></div>
+            <div class="form-group"><label class="form-label">বিবরণ</label><textarea class="form-textarea" id="sDescription"></textarea></div>
+            <div class="form-group"><label class="form-label">ফুটার টেক্সট</label><input class="form-input" id="sFooterText" /></div>
+            <h3 style="font-size:14px;font-weight:700;margin:16px 0 14px">যোগাযোগ</h3>
+            <div class="form-group"><label class="form-label">ফোন</label><input class="form-input" id="sPhone" /></div>
+            <div class="form-group"><label class="form-label">ইমেইল</label><input class="form-input" id="sEmail" /></div>
+            <div class="form-group"><label class="form-label">ঠিকানা</label><textarea class="form-textarea" id="sAddress"></textarea></div>
+            <div class="form-group"><label class="form-label">ফেসবুক লিংক</label><input class="form-input" id="sFacebook" /></div>
+            <div class="form-group"><label class="form-label">ইনস্টাগ্রাম লিংক</label><input class="form-input" id="sInstagram" /></div>
+            <div class="form-group"><label class="form-label">ফ্রি ডেলিভারি ন্যূনতম (৳)</label><input class="form-input" id="sFreeDelivery" type="number" /></div>
+          </div>
+        </div>
+
+        <div class="settings-tab" id="tabHero">
+          <div class="settings-card">
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">হিরো সেকশন</h3>
+            <div class="form-group"><label class="form-label">ব্যাজ টেক্সট</label><input class="form-input" id="sHeroBadge" /></div>
+            <div class="form-group"><label class="form-label">টাইটেল (লাইন ব্রেকের জন্য \n ব্যবহার করুন)</label><textarea class="form-textarea" id="sHeroTitle"></textarea></div>
+            <div class="form-group"><label class="form-label">বিবরণ</label><textarea class="form-textarea" id="sHeroDesc"></textarea></div>
+            <h3 style="font-size:14px;font-weight:700;margin:16px 0 14px">ক্যাটাগরি</h3>
+            <div id="categoryEditor"></div>
+            <button class="btn btn-sm btn-outline" style="margin-top:8px" onclick="addCategory()">+ ক্যাটাগরি যোগ করুন</button>
+          </div>
+        </div>
+
+        <div class="settings-tab" id="tabButtons">
+          <div class="settings-card">
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">বাটন টেক্সট</h3>
+            <div class="form-group"><label class="form-label">হিরো প্রাইমারি বাটন</label><input class="form-input" id="sBtnHeroPri" /></div>
+            <div class="form-group"><label class="form-label">হিরো সেকেন্ডারি বাটন</label><input class="form-input" id="sBtnHeroSec" /></div>
+            <div class="form-group"><label class="form-label">নিউজলেটার বাটন</label><input class="form-input" id="sBtnNewsletter" /></div>
+            <div class="form-group"><label class="form-label">নিউজলেটার প্লেসহোল্ডার</label><input class="form-input" id="sBtnNLPlaceholder" /></div>
+            <div class="form-group"><label class="form-label">চেকআউট বাটন</label><input class="form-input" id="sBtnCheckout" /></div>
+            <h3 style="font-size:14px;font-weight:700;margin:16px 0 14px">নেভিগেশন লিংক</h3>
+            <div id="navLinksEditor"></div>
+            <button class="btn btn-sm btn-outline" style="margin-top:8px" onclick="addNavLink()">+ লিংক যোগ করুন</button>
+          </div>
+        </div>
+
+        <div class="settings-tab" id="tabColors">
+          <div class="settings-card">
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">রঙ সেটিংস</h3>
+            <div class="form-group">
+              <label class="form-label">প্রাইমারি রঙ</label>
+              <div class="color-row"><input type="color" class="color-input" id="sColorPrimary" /><input class="form-input" id="sColorPrimaryHex" /></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">প্রাইমারি (ডার্ক)</label>
+              <div class="color-row"><input type="color" class="color-input" id="sColorPrimaryDark" /><input class="form-input" id="sColorPrimaryDarkHex" /></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ডার্ক ব্যাকগ্রাউন্ড</label>
+              <div class="color-row"><input type="color" class="color-input" id="sColorDark" /><input class="form-input" id="sColorDarkHex" /></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">অ্যাকসেন্ট রঙ</label>
+              <div class="color-row"><input type="color" class="color-input" id="sColorAccent" /><input class="form-input" id="sColorAccentHex" /></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-tab" id="tabData">
+          <div class="settings-card" style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-outline" style="justify-content:center" onclick="exportData()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              ডাটা ডাউনলোড (Backup)
+            </button>
+            <button class="btn btn-outline" style="justify-content:center" onclick="document.getElementById('importFile').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              ডাটা আপলোড (Restore)
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)" />
+            <button class="btn btn-danger" style="justify-content:center" onclick="resetData()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              সব ডাটা রিসেট করুন
+            </button>
+          </div>
+          <div style="margin-top:16px">
+            <div class="settings-card">
+              <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">পাসওয়ার্ড পরিবর্তন</h3>
+              <div class="form-group"><label class="form-label">বর্তমান পাসওয়ার্ড</label><input class="form-input" id="oldPassword" type="password" /></div>
+              <div class="form-group"><label class="form-label">নতুন পাসওয়ার্ড</label><input class="form-input" id="newPassword" type="password" /></div>
+              <div class="form-group"><label class="form-label">নতুন পাসওয়ার্ড (আবার)</label><input class="form-input" id="confirmPassword" type="password" /></div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="changePassword()">পাসওয়ার্ড পরিবর্তন করুন</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding-bottom:20px">
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="saveToGitHub()" id="mainSaveBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            GitHub এ সেভ করুন
+          </button>
+          <p id="saveStatus" style="text-align:center;font-size:12px;color:var(--g3);margin-top:8px"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BOTTOM NAV ═══ -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchPage('pageDashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        হোম
+      </button>
+      <button class="nav-item" onclick="switchPage('pageProducts',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        প্রোডাক্ট
+      </button>
+      <button class="nav-item" onclick="switchPage('pageSettings',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        সেটিংস
+      </button>
+    </nav>
+  </div>
+
+  <!-- ═══════════════ PRODUCT MODAL ═══════════════ -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">নতুন প্রোডাক্ট</h2>
+        <button class="modal-close" onclick="closeModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <form id="productForm" onsubmit="saveProduct(event)">
+        <input type="hidden" id="editId" />
+        <div class="form-group">
+          <label class="form-label">ছবি</label>
+          <div class="image-upload" id="imageUpload" onclick="document.getElementById('imageInput').click()">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>ছবি সিলেক্ট করুন</span>
+            <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)" />
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">প্রোডাক্টের নাম *</label><input class="form-input" id="pName" required /></div>
+        <div class="form-group"><label class="form-label">ক্যাটাগরি *</label><select class="form-select" id="pCategory" required></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group"><label class="form-label">বর্তমান দাম (৳) *</label><input class="form-input" id="pPrice" type="number" required /></div>
+          <div class="form-group"><label class="form-label">পুরোনো দাম (৳)</label><input class="form-input" id="pOldPrice" type="number" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">ব্যাজ</label><select class="form-select" id="pBadge"><option value="">নেই</option><option value="new">নতুন (New)</option><option value="sale">অফার (Sale)</option></select></div>
+        <div class="form-group"><label class="form-label">বিবরণ</label><textarea class="form-textarea" id="pDesc"></textarea></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="submitBtn">সেভ করুন</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════
+    // Config
+    // ═══════════════════════════════════════════════
+    const REPO_OWNER = 'onelpawarai';
+    const REPO_NAME = 'family-shop';
+    const DATA_FILE = 'data.json';
+    const API_URL = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + DATA_FILE;
+    const DEFAULT_PASS = 'family123';
+
+    function getGithubToken() { return localStorage.getItem('fs_github_token') || ''; }
+    function setGithubToken(t) { localStorage.setItem('fs_github_token', t); }
+
+    let siteData = null;
+    let currentImageData = null;
+    let productFilter = 'all';
+
+    // ═══════════════════════════════════════════════
+    // Login
+    // ═══════════════════════════════════════════════
+    function doLogin() {
+      const pass = document.getElementById('loginPass').value;
+      if (pass !== DEFAULT_PASS) {
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('loginPass').value = '';
+        return;
+      }
+      // Save token if entered
+      var tokenInput = document.getElementById('githubTokenInput').value.trim();
+      if (tokenInput) { setGithubToken(tokenInput); }
+      if (!getGithubToken()) {
+        document.getElementById('loginError').textContent = 'GitHub টোকেন দিন!';
+        document.getElementById('loginError').style.display = 'block';
+        return;
+      }
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      document.getElementById('loginError').style.display = 'none';
+      loadFromGitHub();
+    }
+    document.getElementById('loginPass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+
+    // ═══════════════════════════════════════════════
+    // GitHub API
+    // ═══════════════════════════════════════════════
+    async function loadFromGitHub() {
+      document.getElementById('syncBadge').textContent = 'লোড...';
+      document.getElementById('syncBadge').style.background = '#F59E0B';
+      try {
+        var res = await fetch(API_URL, {
+          headers: { 'Authorization': 'token ' + getGithubToken(), 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (!res.ok) throw new Error('GitHub API ' + res.status);
+        var file = await res.json();
+        var content = decodeURIComponent(escape(atob(file.content)));
+        siteData = JSON.parse(content);
+        siteData._sha = file.sha;
+        renderAll();
+        document.getElementById('syncBadge').textContent = 'সিঙ্কড';
+        document.getElementById('syncBadge').style.background = 'var(--grn)';
+        showToast('GitHub থেকে লোড হয়েছে!');
+      } catch (err) {
+        console.error(err);
+        document.getElementById('syncBadge').textContent = 'অফলাইন';
+        document.getElementById('syncBadge').style.background = 'var(--red)';
+        loadLocalFallback();
+      }
+    }
+
+    async function saveToGitHub() {
+      if (!siteData) return;
+      var btn = document.getElementById('mainSaveBtn');
+      var status = document.getElementById('saveStatus');
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg> সেভ হচ্ছে...';
+      status.textContent = 'GitHub এ পাঠানো হচ্ছে...';
+      status.style.color = 'var(--o)';
+
+      gatherSettings();
+
+      try {
+        var content = btoa(unescape(encodeURIComponent(JSON.stringify(siteData, null, 2))));
+        var body = { message: 'admin: update shop data (' + new Date().toISOString().slice(0,19) + ')', content: content, sha: siteData._sha };
+
+        var res = await fetch(API_URL, {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getGithubToken(), 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+          var err = await res.json().catch(function() { return {}; });
+          throw new Error(err.message || 'HTTP ' + res.status);
+        }
+
+        var updated = await res.json();
+        siteData._sha = updated.content.sha;
+        localStorage.setItem('family_shop_data', JSON.stringify(siteData));
+
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> GitHub এ সেভ করুন';
+        status.textContent = 'সফলভাবে GitHub এ সেভ হয়েছে!';
+        status.style.color = 'var(--grn)';
+        showToast('GitHub এ সেভ হয়েছে!');
+        setTimeout(function() { status.textContent = ''; }, 3000);
+      } catch (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> GitHub এ সেভ করুন';
+        status.textContent = 'ত্রুটি: ' + err.message;
+        status.style.color = 'var(--red)';
+        showToast('সেভ ব্যর্থ!');
+        localStorage.setItem('family_shop_data', JSON.stringify(siteData));
+      }
+    }
+
+    function loadLocalFallback() {
+      try {
+        var raw = localStorage.getItem('family_shop_data');
+        if (raw) { siteData = JSON.parse(raw); renderAll(); return; }
+      } catch(e) {}
+      siteData = getDefaultData();
+      renderAll();
+    }
+
+    // ═══════════════════════════════════════════════
+    // Default Data
+    // ═══════════════════════════════════════════════
+    function getDefaultData() {
+      return {
+        shopName: 'Family Shop', shopTagline: 'আপনার পরিবারের অনলাইন দোকান',
+        shopDescription: 'স্মার্টওয়াচ, চশমা, শাড়ি, শার্ট, প্যান্ট, ঘড়ি এবং আরও অনেক কিছু — সবার জন্য সেরা প্রোডাক্ট, সেরা দামে।',
+        heroTitle: 'আপনার পরিবারের\nসেরা অনলাইন দোকান', heroBadge: 'নতুন কালেকশন ২০২৬',
+        heroDescription: 'স্মার্টওয়াচ, চশমা, শাড়ি, শার্ট, প্যান্ট, ঘড়ি এবং আরও অনেক কিছু — সবার জন্য সেরা প্রোডাক্ট, সেরা দামে।',
+        contactPhone: '+880 1XXX-XXXXXX', contactEmail: 'info@familyshop.com',
+        contactAddress: 'ঢাকা, বাংলাদেশ', facebook: '', instagram: '', freeDeliveryMin: 1000,
+        footerText: 'আপনার পরিবারের অনলাইন দোকান।',
+        navLinks: [{ label: 'হোম', href: '#home' }, { label: 'প্রোডাক্ট', href: '#products' }, { label: 'ক্যাটাগরি', href: '#categories' }, { label: 'আমাদের সম্পর্কে', href: '#about' }, { label: 'যোগাযোগ', href: '#contact' }],
+        buttons: { heroPrimary: 'এখনই কিনুন', heroSecondary: 'ক্যাটাগরি দেখুন', newsletter: 'সাবস্ক্রাইব', newsletterPlaceholder: 'আপনার ইমেইল দিন...', checkout: 'চেকআউট' },
+        colors: { primary: '#F97316', primaryDark: '#EA580C', dark: '#0F0F0F', accent: '#10B981' },
+        categories: [
+          { id: 'watch', name: 'ঘড়ি', count: '১২ টি প্রোডাক্ট' },
+          { id: 'smartwatch', name: 'স্মার্টওয়াচ', count: '৮ টি প্রোডাক্ট' },
+          { id: 'eyewear', name: 'চশমা', count: '১৫ টি প্রোডাক্ট' },
+          { id: 'clothing', name: 'পোশাক', count: '২৫ টি প্রোডাক্ট' }
+        ],
+        products: [
+          { id: 1, name: 'স্মার্টওয়াচ প্রো', category: 'smartwatch', price: 2499, oldPrice: 3999, image: 'images/smartwatch.jpg', badge: 'sale', rating: 4.8, reviews: 124, description: '' },
+          { id: 2, name: 'প্রিমিয়াম সানগ্লাস', category: 'eyewear', price: 1299, oldPrice: 1999, image: 'images/sunglasses.jpg', badge: 'new', rating: 4.6, reviews: 89, description: '' },
+          { id: 3, name: 'ক্লাসিক শাড়ি', category: 'clothing', price: 1899, oldPrice: 2899, image: 'images/saree.jpg', badge: 'sale', rating: 4.9, reviews: 201, description: '' },
+          { id: 4, name: 'ক্যাজুয়াল শার্ট', category: 'clothing', price: 799, oldPrice: 1299, image: 'images/shirt.jpg', badge: 'new', rating: 4.5, reviews: 67, description: '' },
+          { id: 5, name: 'ফ্যাশন প্যান্ট', category: 'clothing', price: 999, oldPrice: 1499, image: 'images/pants.jpg', badge: '', rating: 4.7, reviews: 156, description: '' },
+          { id: 6, name: 'লাক্সারি ঘড়ি', category: 'watch', price: 3499, oldPrice: 5999, image: 'images/watch.jpg', badge: 'sale', rating: 4.9, reviews: 312, description: '' }
+        ],
+        orders: [],
+        nextId: 7
+      };
+    }
+
+    // ═══════════════════════════════════════════════
+    // Render All
+    // ═══════════════════════════════════════════════
+    function renderAll() {
+      renderDashboard();
+      renderProducts();
+      loadSettings();
+    }
+
+    function renderDashboard() {
+      if (!siteData) return;
+      document.getElementById('statProducts').textContent = siteData.products.length;
+      document.getElementById('statCategories').textContent = siteData.categories.length;
+      document.getElementById('statOrders').textContent = (siteData.orders || []).length;
+      var top = siteData.products.slice(0, 3);
+      document.getElementById('dashProducts').innerHTML = top.map(function(p) { return productItemHTML(p, false); }).join('');
+    }
+
+    function renderProducts() {
+      if (!siteData) return;
+      var fb = document.getElementById('filterBar');
+      fb.innerHTML = '<button class="btn btn-sm product-filter" style="' + (productFilter==='all'?'background:var(--o);color:#fff;border-color:var(--o)':'') + '" onclick="filterProducts(\'all\',this)">সব</button>' +
+        siteData.categories.map(function(c) {
+          return '<button class="btn btn-sm product-filter" style="' + (productFilter===c.id?'background:var(--o);color:#fff;border-color:var(--o)':'') + '" onclick="filterProducts(\'' + c.id + '\',this)">' + c.name + '</button>';
+        }).join('');
+
+      var sel = document.getElementById('pCategory');
+      sel.innerHTML = '<option value="">সিলেক্ট</option>' + siteData.categories.map(function(c) {
+        return '<option value="' + c.id + '">' + c.name + '</option>';
+      }).join('');
+
+      var list = productFilter === 'all' ? siteData.products : siteData.products.filter(function(p) { return p.category === productFilter; });
+      document.getElementById('productList').innerHTML = list.length ? list.map(function(p) { return productItemHTML(p, true); }).join('') : '<div class="empty-state"><p>কোনো প্রোডাক্ট নেই</p></div>';
+    }
+
+    function productItemHTML(p, showActions) {
+      return '<div class="product-item">' +
+        '<img src="' + p.image + '" alt="' + p.name + '" onerror="this.style.background=\'#f5f5f5\'" />' +
+        '<div class="product-item-info">' +
+          '<div class="product-item-name">' + p.name + '</div>' +
+          '<div class="product-item-price">\u09F3' + p.price.toLocaleString() + (p.oldPrice ? ' <span style="text-decoration:line-through;color:#999;font-weight:400;font-size:12px">\u09F3' + p.oldPrice.toLocaleString() + '</span>' : '') + '</div>' +
+          '<div class="product-item-cat">' + getCatLabel(p.category) + (p.badge ? ' \u00B7 ' + (p.badge==='new'?'নতুন':'অফার') : '') + '</div>' +
+        '</div>' +
+        (showActions ? '<div class="product-item-actions">' +
+          '<button class="icon-btn edit" onclick="editProduct(' + p.id + ')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+          '<button class="icon-btn delete" onclick="deleteProduct(' + p.id + ')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>' +
+        '</div>' : '') +
+        '</div>';
+    }
+
+    function getCatLabel(c) {
+      var found = siteData.categories.find(function(x) { return x.id === c; });
+      return found ? found.name : c;
+    }
+
+    function filterProducts(cat, btn) {
+      productFilter = cat;
+      document.querySelectorAll('.product-filter').forEach(function(b) { b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; });
+      if (btn) { btn.style.background = 'var(--o)'; btn.style.color = '#fff'; btn.style.borderColor = 'var(--o)'; }
+      renderProducts();
+    }
+
+    // ═══════════════════════════════════════════════
+    // Products CRUD
+    // ═══════════════════════════════════════════════
+    function openAddProduct() {
+      document.getElementById('editId').value = '';
+      document.getElementById('modalTitle').textContent = 'নতুন প্রোডাক্ট যোগ করুন';
+      document.getElementById('submitBtn').textContent = 'প্রোডাক্ট সেভ করুন';
+      document.getElementById('productForm').reset();
+      currentImageData = null;
+      resetImageUpload();
+      document.getElementById('productModal').classList.add('open');
+    }
+
+    function editProduct(id) {
+      var p = siteData.products.find(function(x) { return x.id === id; });
+      if (!p) return;
+      document.getElementById('editId').value = id;
+      document.getElementById('modalTitle').textContent = 'প্রোডাক্ট এডিট করুন';
+      document.getElementById('submitBtn').textContent = 'আপডেট করুন';
+      document.getElementById('pName').value = p.name;
+      document.getElementById('pCategory').value = p.category;
+      document.getElementById('pPrice').value = p.price;
+      document.getElementById('pOldPrice').value = p.oldPrice || '';
+      document.getElementById('pBadge').value = p.badge || '';
+      document.getElementById('pDesc').value = p.description || '';
+      if (p.image) {
+        currentImageData = p.image;
+        document.getElementById('imageUpload').innerHTML = '<img src="' + p.image + '" /><input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)" />';
+      }
+      document.getElementById('productModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').classList.remove('open');
+      currentImageData = null;
+      resetImageUpload();
+    }
+
+    function resetImageUpload() {
+      document.getElementById('imageUpload').innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>ছবি সিলেক্ট করুন</span><input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)" />';
+    }
+
+    function previewImage(e) {
+      var file = e.target.files[0]; if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        currentImageData = ev.target.result;
+        document.getElementById('imageUpload').innerHTML = '<img src="' + ev.target.result + '" /><input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)" />';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveProduct(e) {
+      e.preventDefault();
+      var editId = document.getElementById('editId').value;
+      var product = {
+        name: document.getElementById('pName').value.trim(),
+        category: document.getElementById('pCategory').value,
+        price: parseInt(document.getElementById('pPrice').value) || 0,
+        oldPrice: parseInt(document.getElementById('pOldPrice').value) || 0,
+        badge: document.getElementById('pBadge').value,
+        description: document.getElementById('pDesc').value.trim(),
+        image: currentImageData || 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" fill="#f5f5f5"><rect width="400" height="400"/><text x="200" y="210" text-anchor="middle" font-size="40" fill="#ccc">No Image</text></svg>'),
+        rating: 4.5, reviews: 0
+      };
+
+      if (editId) {
+        var idx = siteData.products.findIndex(function(p) { return p.id === parseInt(editId); });
+        if (idx >= 0) { product.id = parseInt(editId); product.rating = siteData.products[idx].rating; product.reviews = siteData.products[idx].reviews; siteData.products[idx] = product; }
+        showToast('আপডেট হয়েছে!');
+      } else {
+        product.id = siteData.nextId++;
+        siteData.products.push(product);
+        showToast('নতুন প্রোডাক্ট যোগ হয়েছে!');
+      }
+      closeModal();
+      renderProducts();
+      renderDashboard();
+    }
+
+    function deleteProduct(id) {
+      if (!confirm('ডিলিট করবেন?')) return;
+      siteData.products = siteData.products.filter(function(p) { return p.id !== id; });
+      renderProducts(); renderDashboard();
+      showToast('ডিলিট হয়েছে!');
+    }
+
+    // ═══════════════════════════════════════════════
+    // Settings Load/Gather
+    // ═══════════════════════════════════════════════
+    function loadSettings() {
+      if (!siteData) return;
+      var s = siteData;
+      document.getElementById('topbarTitle').textContent = s.shopName || 'Family Shop';
+      document.getElementById('sShopName').value = s.shopName || '';
+      document.getElementById('sTagline').value = s.shopTagline || '';
+      document.getElementById('sDescription').value = s.shopDescription || '';
+      document.getElementById('sFooterText').value = s.footerText || '';
+      document.getElementById('sPhone').value = s.contactPhone || '';
+      document.getElementById('sEmail').value = s.contactEmail || '';
+      document.getElementById('sAddress').value = s.contactAddress || '';
+      document.getElementById('sFacebook').value = s.facebook || '';
+      document.getElementById('sInstagram').value = s.instagram || '';
+      document.getElementById('sFreeDelivery').value = s.freeDeliveryMin || 1000;
+      document.getElementById('sHeroBadge').value = s.heroBadge || '';
+      document.getElementById('sHeroTitle').value = s.heroTitle || '';
+      document.getElementById('sHeroDesc').value = s.heroDescription || '';
+      var b = s.buttons || {};
+      document.getElementById('sBtnHeroPri').value = b.heroPrimary || '';
+      document.getElementById('sBtnHeroSec').value = b.heroSecondary || '';
+      document.getElementById('sBtnNewsletter').value = b.newsletter || '';
+      document.getElementById('sBtnNLPlaceholder').value = b.newsletterPlaceholder || '';
+      document.getElementById('sBtnCheckout').value = b.checkout || '';
+      var c = s.colors || {};
+      setColorInput('sColorPrimary', 'sColorPrimaryHex', c.primary || '#F97316');
+      setColorInput('sColorPrimaryDark', 'sColorPrimaryDarkHex', c.primaryDark || '#EA580C');
+      setColorInput('sColorDark', 'sColorDarkHex', c.dark || '#0F0F0F');
+      setColorInput('sColorAccent', 'sColorAccentHex', c.accent || '#10B981');
+      renderCategoryEditor();
+      renderNavLinkEditor();
+    }
+
+    function gatherSettings() {
+      if (!siteData) return;
+      siteData.shopName = document.getElementById('sShopName').value.trim();
+      siteData.shopTagline = document.getElementById('sTagline').value.trim();
+      siteData.shopDescription = document.getElementById('sDescription').value.trim();
+      siteData.footerText = document.getElementById('sFooterText').value.trim();
+      siteData.contactPhone = document.getElementById('sPhone').value.trim();
+      siteData.contactEmail = document.getElementById('sEmail').value.trim();
+      siteData.contactAddress = document.getElementById('sAddress').value.trim();
+      siteData.facebook = document.getElementById('sFacebook').value.trim();
+      siteData.instagram = document.getElementById('sInstagram').value.trim();
+      siteData.freeDeliveryMin = parseInt(document.getElementById('sFreeDelivery').value) || 1000;
+      siteData.heroBadge = document.getElementById('sHeroBadge').value.trim();
+      siteData.heroTitle = document.getElementById('sHeroTitle').value.trim();
+      siteData.heroDescription = document.getElementById('sHeroDesc').value.trim();
+      siteData.buttons = {
+        heroPrimary: document.getElementById('sBtnHeroPri').value.trim(),
+        heroSecondary: document.getElementById('sBtnHeroSec').value.trim(),
+        newsletter: document.getElementById('sBtnNewsletter').value.trim(),
+        newsletterPlaceholder: document.getElementById('sBtnNLPlaceholder').value.trim(),
+        checkout: document.getElementById('sBtnCheckout').value.trim()
+      };
+      siteData.colors = {
+        primary: document.getElementById('sColorPrimaryHex').value || '#F97316',
+        primaryDark: document.getElementById('sColorPrimaryDarkHex').value || '#EA580C',
+        dark: document.getElementById('sColorDarkHex').value || '#0F0F0F',
+        accent: document.getElementById('sColorAccentHex').value || '#10B981'
+      };
+      gatherNavLinks();
+    }
+
+    function setColorInput(pickerId, hexId, val) {
+      document.getElementById(pickerId).value = val;
+      document.getElementById(hexId).value = val;
+      document.getElementById(pickerId).oninput = function() { document.getElementById(hexId).value = document.getElementById(pickerId).value; };
+      document.getElementById(hexId).oninput = function() { document.getElementById(pickerId).value = document.getElementById(hexId).value; };
+    }
+
+    // ═══════════════════════════════════════════════
+    // Category Editor
+    // ═══════════════════════════════════════════════
+    function renderCategoryEditor() {
+      document.getElementById('categoryEditor').innerHTML = siteData.categories.map(function(c, i) {
+        return '<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center">' +
+          '<input class="form-input" value="' + c.name + '" onchange="siteData.categories[' + i + '].name=this.value" style="flex:1" placeholder="নাম" />' +
+          '<input class="form-input" value="' + c.id + '" onchange="siteData.categories[' + i + '].id=this.value" style="width:80px" placeholder="ID" />' +
+          '<button class="icon-btn delete" onclick="siteData.categories.splice(' + i + ',1);renderCategoryEditor()" style="flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' +
+        '</div>';
+      }).join('');
+    }
+    function addCategory() { siteData.categories.push({ id: 'new', name: 'নতুন ক্যাটাগরি', count: '০ টি প্রোডাক্ট' }); renderCategoryEditor(); }
+
+    // ═══════════════════════════════════════════════
+    // Nav Links Editor
+    // ═══════════════════════════════════════════════
+    function renderNavLinkEditor() {
+      document.getElementById('navLinksEditor').innerHTML = siteData.navLinks.map(function(l, i) {
+        return '<div style="display:flex;gap:6px;margin-bottom:8px;align-items:center">' +
+          '<input class="form-input" value="' + l.label + '" onchange="siteData.navLinks[' + i + '].label=this.value" style="flex:1" placeholder="লেবেল" />' +
+          '<input class="form-input" value="' + l.href + '" onchange="siteData.navLinks[' + i + '].href=this.value" style="width:100px" placeholder="লিংক" />' +
+          '<button class="icon-btn delete" onclick="siteData.navLinks.splice(' + i + ',1);renderNavLinkEditor()" style="flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' +
+        '</div>';
+      }).join('');
+    }
+    function addNavLink() { siteData.navLinks.push({ label: 'নতুন', href: '#' }); renderNavLinkEditor(); }
+    function gatherNavLinks() { /* already updated in-place via onchange */ }
+
+    // ═══════════════════════════════════════════════
+    // Password Change
+    // ═══════════════════════════════════════════════
+    function changePassword() {
+      var oldPass = document.getElementById('oldPassword').value;
+      var newPass = document.getElementById('newPassword').value;
+      var confirmPass = document.getElementById('confirmPassword').value;
+      if (oldPass !== DEFAULT_PASS) { showToast('বর্তমান পাসওয়ার্ড ভুল!'); return; }
+      if (!newPass || newPass.length < 4) { showToast('পাসওয়ার্ড কমপক্ষে ৪ অক্ষর হতে হবে!'); return; }
+      if (newPass !== confirmPass) { showToast('পাসওয়ার্ড মিলছে না!'); return; }
+      siteData.adminPassword = newPass;
+      showToast('পাসওয়ার্ড পরিবর্তন হয়েছে! GitHub এ সেভ করুন।');
+      document.getElementById('oldPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+    }
+
+    // ═══════════════════════════════════════════════
+    // Settings Tabs
+    // ═══════════════════════════════════════════════
+    function showSettingsTab(tab, btn) {
+      document.querySelectorAll('.settings-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      var map = { shop: 'tabShop', hero: 'tabHero', buttons: 'tabButtons', colors: 'tabColors', data: 'tabData' };
+      document.getElementById(map[tab]).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ═══════════════════════════════════════════════
+    // Page Nav
+    // ═══════════════════════════════════════════════
+    function switchPage(id, btn) {
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+      if (id === 'pageProducts') renderProducts();
+      if (id === 'pageDashboard') renderDashboard();
+      if (id === 'pageSettings') loadSettings();
+    }
+
+    // ═══════════════════════════════════════════════
+    // Data Export/Import/Reset
+    // ═══════════════════════════════════════════════
+    function exportData() {
+      gatherSettings();
+      var blob = new Blob([JSON.stringify(siteData, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'family-shop-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      showToast('ডাউনলোড হয়েছে!');
+    }
+
+    function importData(e) {
+      var file = e.target.files[0]; if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          var d = JSON.parse(ev.target.result);
+          if (d.products) { siteData = d; renderAll(); showToast('রিস্টোর হয়েছে! GitHub এ সেভ করুন।'); }
+          else showToast('ভুল ফাইল!');
+        } catch(err) { showToast('পড়া যায়নি!'); }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    function resetData() {
+      if (!confirm('সব ডাটা মুছে যাবে!')) return;
+      if (!confirm('আরেকবার নিশ্চিত হোন!')) return;
+      siteData = getDefaultData();
+      renderAll();
+      showToast('রিসেট হয়েছে!');
+    }
+
+    // ═══════════════════════════════════════════════
+    // Toast
+    // ═══════════════════════════════════════════════
+    function showToast(msg) {
+      var old = document.querySelector('.toast'); if (old) old.remove();
+      var t = document.createElement('div');
+      t.className = 'toast'; t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(function() { t.remove(); }, 2500);
+    }
+  </script>
+</body>
+</html>

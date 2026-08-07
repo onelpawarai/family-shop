@@ -2,75 +2,39 @@
    Family Shop — Interactive JavaScript
    ═══════════════════════════════════════════════════ */
 
-// ─── Product Data ────────────────────────────────────
-const PRODUCTS = [
-  {
-    id: 1,
-    name: 'স্মার্টওয়াচ প্রো',
-    category: 'smartwatch',
-    price: 2499,
-    oldPrice: 3999,
-    image: 'images/smartwatch.jpg',
-    badge: 'sale',
-    rating: 4.8,
-    reviews: 124,
-  },
-  {
-    id: 2,
-    name: 'প্রিমিয়াম সানগ্লাস',
-    category: 'eyewear',
-    price: 1299,
-    oldPrice: 1999,
-    image: 'images/sunglasses.jpg',
-    badge: 'new',
-    rating: 4.6,
-    reviews: 89,
-  },
-  {
-    id: 3,
-    name: 'ক্লাসিক শাড়ি',
-    category: 'clothing',
-    price: 1899,
-    oldPrice: 2899,
-    image: 'images/saree.jpg',
-    badge: 'sale',
-    rating: 4.9,
-    reviews: 201,
-  },
-  {
-    id: 4,
-    name: 'ক্যাজুয়াল শার্ট',
-    category: 'clothing',
-    price: 799,
-    oldPrice: 1299,
-    image: 'images/shirt.jpg',
-    badge: 'new',
-    rating: 4.5,
-    reviews: 67,
-  },
-  {
-    id: 5,
-    name: 'ফ্যাশন প্যান্ট',
-    category: 'clothing',
-    price: 999,
-    oldPrice: 1499,
-    image: 'images/pants.jpg',
-    badge: '',
-    rating: 4.7,
-    reviews: 156,
-  },
-  {
-    id: 6,
-    name: 'লাক্সারি ঘড়ি',
-    category: 'watch',
-    price: 3499,
-    oldPrice: 5999,
-    image: 'images/watch.jpg',
-    badge: 'sale',
-    rating: 4.9,
-    reviews: 312,
-  },
+// ─── Product Data (synced from GitHub data.json) ───
+const DATA_URL = 'https://raw.githubusercontent.com/onelpawarai/family-shop/main/data.json';
+
+// Default products — used while loading or if GitHub fails
+const DEFAULT_PRODUCTS = [
+  { id: 1, name: 'স্মার্টওয়াচ প্রো', category: 'smartwatch', price: 2499, oldPrice: 3999, image: 'images/smartwatch.jpg', badge: 'sale', rating: 4.8, reviews: 124 },
+  { id: 2, name: 'প্রিমিয়াম সানগ্লাস', category: 'eyewear', price: 1299, oldPrice: 1999, image: 'images/sunglasses.jpg', badge: 'new', rating: 4.6, reviews: 89 },
+  { id: 3, name: 'ক্লাসিক শাড়ি', category: 'clothing', price: 1899, oldPrice: 2899, image: 'images/saree.jpg', badge: 'sale', rating: 4.9, reviews: 201 },
+  { id: 4, name: 'ক্যাজুয়াল শার্ট', category: 'clothing', price: 799, oldPrice: 1299, image: 'images/shirt.jpg', badge: 'new', rating: 4.5, reviews: 67 },
+  { id: 5, name: 'ফ্যাশন প্যান্ট', category: 'clothing', price: 999, oldPrice: 1499, image: 'images/pants.jpg', badge: '', rating: 4.7, reviews: 156 },
+  { id: 6, name: 'লাক্সারি ঘড়ি', category: 'watch', price: 3499, oldPrice: 5999, image: 'images/watch.jpg', badge: 'sale', rating: 4.9, reviews: 312 }
 ];
+
+let PRODUCTS = [...DEFAULT_PRODUCTS];
+let siteData = null;
+
+// Load from GitHub
+async function loadSiteData() {
+  try {
+    const res = await fetch(DATA_URL);
+    if (!res.ok) throw new Error('Failed');
+    const data = await res.json();
+    siteData = data;
+    if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+      PRODUCTS = data.products;
+    }
+    // Re-render with new data
+    if (typeof renderProducts === 'function') renderProducts();
+  } catch (err) {
+    console.log('GitHub load failed, using defaults');
+  }
+}
+loadSiteData();
 
 // ─── State ───────────────────────────────────────────
 let cart = [];
