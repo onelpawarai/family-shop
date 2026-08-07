@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════ */
 
 // ─── Data (synced from GitHub data.json) ───
-const DATA_URL = 'https://raw.githubusercontent.com/onelpawarai/family-shop/main/data.json?v=' + Date.now();
+const DATA_URL = 'https://raw.githubusercontent.com/onelpawarai/family-shop/main/data.json';
 
 // Default data
 const DEFAULT_DATA = {
@@ -54,24 +54,29 @@ let PRODUCTS = [...DEFAULT_DATA.products];
 
 // Load from GitHub and apply ALL settings
 async function loadSiteData() {
+  console.log('[FamilyShop] Loading data from GitHub...');
   try {
-    const res = await fetch(DATA_URL);
-    if (!res.ok) throw new Error('Failed');
+    const res = await fetch(DATA_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
+    console.log('[FamilyShop] Data loaded! badge:', data.heroBadge, 'products:', data.products?.length);
     siteData = { ...DEFAULT_DATA, ...data };
     PRODUCTS = siteData.products || DEFAULT_DATA.products;
     applySiteSettings();
     renderProducts();
+    console.log('[FamilyShop] Settings applied!');
   } catch (err) {
-    console.log('GitHub load failed, using defaults');
+    console.error('[FamilyShop] GitHub load FAILED:', err);
     siteData = { ...DEFAULT_DATA };
     applySiteSettings();
+    renderProducts();
   }
 }
 
 // Apply ALL settings from data.json to the main page
 function applySiteSettings() {
   if (!siteData) return;
+  console.log('[FamilyShop] Applying settings, heroBadge:', siteData.heroBadge);
 
   // Apply colors as CSS custom properties
   const c = siteData.colors || {};
