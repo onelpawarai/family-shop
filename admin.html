@@ -115,6 +115,9 @@
       <div class="topbar-logo">F</div>
       <h1 id="topbarTitle">Family Shop</h1>
       <span class="topbar-badge" id="syncBadge">লোড</span>
+      <button class="icon-btn" onclick="doLogout()" title="লগআউট" style="border:1px solid var(--g5);width:32px;height:32px;border-radius:8px;display:grid;place-items:center;cursor:pointer;background:var(--w)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
     </div>
 
     <!-- ═══ DASHBOARD ═══ -->
@@ -317,6 +320,10 @@
 
     function getGithubToken() { return localStorage.getItem('fs_github_token') || ''; }
     function setGithubToken(t) { localStorage.setItem('fs_github_token', t); }
+    function getAdminPass() { return localStorage.getItem('fs_admin_pass') || ''; }
+    function setAdminPass(p) { localStorage.setItem('fs_admin_pass', p); }
+    function isLoggedIn() { return localStorage.getItem('fs_logged_in') === '1'; }
+    function setLoggedIn(v) { localStorage.setItem('fs_logged_in', v ? '1' : '0'); }
 
     let siteData = null;
     let currentImageData = null;
@@ -325,9 +332,10 @@
     // ═══════════════════════════════════════════════
     // Login
     // ═══════════════════════════════════════════════
-    function doLogin() {
-      const pass = document.getElementById('loginPass').value;
-      if (pass !== DEFAULT_PASS) {
+    function doLogin(skipValidation) {
+      var pass = document.getElementById('loginPass').value;
+      var storedPass = getAdminPass() || DEFAULT_PASS;
+      if (!skipValidation && pass !== storedPass) {
         document.getElementById('loginError').style.display = 'block';
         document.getElementById('loginPass').value = '';
         return;
@@ -335,17 +343,32 @@
       // Save token if entered
       var tokenInput = document.getElementById('githubTokenInput').value.trim();
       if (tokenInput) { setGithubToken(tokenInput); }
+      // Save password for future auto-login
+      if (pass && pass === DEFAULT_PASS && !getAdminPass()) { setAdminPass(pass); }
       if (!getGithubToken()) {
         document.getElementById('loginError').textContent = 'GitHub টোকেন দিন!';
         document.getElementById('loginError').style.display = 'block';
         return;
       }
+      setLoggedIn(true);
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
       document.getElementById('loginError').style.display = 'none';
       loadFromGitHub();
     }
     document.getElementById('loginPass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+
+    // Auto-login if credentials exist
+    (function() {
+      var token = getGithubToken();
+      var pass = getAdminPass();
+      if (token && pass && isLoggedIn()) {
+        doLogin(true);
+      } else if (token) {
+        document.getElementById('githubTokenInput').value = token;
+        document.getElementById('githubTokenInput').style.borderColor = 'var(--grn)';
+      }
+    })();
 
     // ═══════════════════════════════════════════════
     // GitHub API
@@ -800,6 +823,14 @@
       t.className = 'toast'; t.textContent = msg;
       document.body.appendChild(t);
       setTimeout(function() { t.remove(); }, 2500);
+    }
+
+    // ═══════════════════════════════════════════════
+    // Logout
+    // ═══════════════════════════════════════════════
+    function doLogout() {
+      setLoggedIn(false);
+      location.reload();
     }
   </script>
 </body>
